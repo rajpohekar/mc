@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Experiments — Copy Code Directly</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .experiment-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .experiment-button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .experiment-button:hover {
+            background-color: #45a049;
+        }
+
+        button.copy-btn {
+            background-color: #008CBA;
+            padding: 10px 20px;
+            color: white;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button.copy-btn:hover {
+            background-color: #007b8d;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>IIT Kharagpur</h1>
+
+    <div class="experiment-container">
+        <button class="experiment-button" onclick="copyExperimentCode('exp1_m.txt')">Experiment 1</button>
+        <button class="experiment-button" onclick="copyExperimentCode('exp1_p.txt')">Experiment 2</button>
+        <button class="experiment-button" onclick="copyExperimentCode('exp2_m.txt')">Experiment 3</button>
+        <button class="experiment-button" onclick="copyExperimentCode('exp2_p.txt')">Experiment 4</button>
+        <button class="experiment-button" onclick="copyExperimentCode('exp4_m.txt')">Experiment 5</button>
+        <button class="experiment-button" onclick="copyExperimentCode('exp4_p.txt')">Experiment 6</button>
+        <button class="experiment-button" onclick="copyExperimentCode('exp5.txt')">Experiment 7</button>
+        <button class="experiment-button" onclick="copyExperimentCode('exp8a.txt')">Experiment 8</button>
+        <button class="experiment-button" onclick="copyExperimentCode('exp8b.txt')">Experiment 9</button>
+    </div>
+    <div id="copyStatus" style="display:none; margin-top: 20px; color: #333; font-weight: bold; text-align: center;">
+        Code copied to clipboard!</div>
+
+    <script>
+        // Function to load and copy the experiment code from an external file directly to clipboard
+        async function copyExperimentCode(fileName) {
+            try {
+                const response = await fetch(fileName);
+                const text = await response.text();
+                copyToClipboard(text);  // Copy the content directly to clipboard
+            } catch (error) {
+                const status = document.getElementById('copyStatus');
+                status.textContent = 'Failed to load the experiment code.';
+                status.style.display = 'block';
+                console.error('Error loading file:', error);
+            }
+        }
+
+        // Function to copy the text to the clipboard
+        function copyToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textArea);
+
+            const status = document.getElementById('copyStatus');
+            status.textContent = 'Code copied to clipboard!';
+            status.style.display = 'block';
+        }
+    </script>
+
+</body>
+
+</html>

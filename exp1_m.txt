@@ -1,0 +1,44 @@
+clc;
+clear;
+clear all;
+c1 = [1 1 1 1];
+c2 = [1 -1 1 -1];
+c3 = [1 1 -1 -1];
+c4 = [1 -1 -1 1];
+
+disp("Enter the data bits (use 1 or -1):");
+d1 = input("Enter D1: ");
+d2 = input("Enter D2: ");
+d3 = input("Enter D3: ");
+d4 = input("Enter D4: ");
+
+r1 = c1 .* d1;
+r2 = c2 .* d2;
+r3 = c3 .* d3;
+r4 = c4 .* d4;
+resultant_channel = r1 + r2 + r3 + r4;
+disp("Resultant Channel:");
+disp(resultant_channel);
+channel = input("Enter station to listen (1-4): ");
+if channel == 1
+    rc = c1;
+elseif channel == 2
+    rc = c2;
+elseif channel == 3
+    rc = c3;
+elseif channel == 4
+    rc = c4;
+else
+    disp("Invalid choice");
+    return;
+end
+
+inner_product = resultant_channel .* rc;
+disp("Inner Product:");
+disp(inner_product);
+
+res1 = sum(inner_product);
+data = res1 / length(inner_product);
+
+disp("Recovered Data Bit:");
+disp(data);

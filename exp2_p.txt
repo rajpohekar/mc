@@ -1,0 +1,73 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+channels = 10
+subscribers = 15000
+R = 15
+N = 7
+D = np.sqrt(3 * N) * R
+
+print("========= GSM SYSTEM =========")
+print("Total Subscribers =", subscribers)
+print("Total Channels =", channels)
+print("Cluster Size =", N)
+print("Reuse Distance = {:.2f} km".format(D))
+
+zone1 = [1, 2, 3]
+zone2 = [4, 5, 6]
+zone3 = [7, 8]
+zone4 = [9, 10]
+
+print("\nChannel Allocation")
+print("Zone 1 -> 900 MHz -> Channels 1 2 3")
+print("Zone 2 -> 1800 MHz -> Channels 4 5 6")
+print("Zone 3 -> 1900 MHz -> Channels 7 8")
+print("Zone 4 -> Reused Channels -> 9 10")
+
+cells = 4
+traffic = np.random.randint(2000, 5001, cells)
+users_per_channel = 500
+capacity = channels * users_per_channel
+allocated = np.minimum(traffic, capacity)
+drop_rate = np.maximum(0, (traffic - allocated) / traffic)
+avg_drop = np.mean(drop_rate)
+
+print("\nAverage Call Drop Rate = {:.4f}".format(avg_drop))
+
+plt.figure()
+plt.bar(range(1, cells+1), traffic)
+plt.title("Traffic Demand in Zones")
+plt.xlabel("Zones")
+plt.ylabel("Users")
+plt.grid(True)
+
+plt.figure()
+plt.bar(range(1, cells+1), allocated)
+plt.title("Allocated Users in Zones")
+plt.xlabel("Zones")
+plt.ylabel("Allocated Users")
+plt.grid(True)
+
+plt.figure()
+plt.plot(range(1, cells+1), drop_rate, linewidth=2)
+plt.title("Call Drop Rate")
+plt.xlabel("Zones")
+plt.ylabel("Drop Rate")
+plt.grid(True)
+
+plt.figure()
+theta = np.linspace(0, 2*np.pi, 100)
+
+for i in range(4):
+    x = 25 * np.cos(2*np.pi*(i+1)/4)
+    y = 25 * np.sin(2*np.pi*(i+1)/4)
+    plt.fill(
+        x + R*np.cos(theta),
+        y + R*np.sin(theta)
+    )
+    plt.text(x, y, f'Zone {i+1}', ha='center')
+
+plt.title("GSM Frequency Reuse Strategy")
+plt.axis('equal')
+plt.grid(True)
+plt.show()

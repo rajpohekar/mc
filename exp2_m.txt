@@ -1,0 +1,80 @@
+clc;
+clear;
+close all;
+
+channels = 10;
+subscribers = 15000;
+R = 15;  
+N = 7;      
+D = sqrt(3*N)*R;
+
+fprintf('========= GSM SYSTEM =========\n');
+fprintf('Total Subscribers = %d\n', subscribers);
+fprintf('Total Channels = %d\n', channels);
+fprintf('Cluster Size = %d\n', N);
+fprintf('Reuse Distance = %.2f km\n', D);
+
+zone1 = [1 2 3];
+zone2 = [4 5 6];
+zone3 = [7 8];
+zone4 = [9 10];
+
+disp(' ');
+disp('Channel Allocation');
+disp('Zone 1 -> 900 MHz -> Channels 1 2 3');
+disp('Zone 2 -> 1800 MHz -> Channels 4 5 6');
+disp('Zone 3 -> 1900 MHz -> Channels 7 8');
+disp('Zone 4 -> Reused Channels -> 9 10');
+
+cells = 4;
+traffic = randi([2000 5000],1,cells);
+users_per_channel = 500;
+capacity = channels * users_per_channel;
+allocated = min(traffic, capacity);
+drop_rate = max(0,(traffic - allocated)./traffic);
+avg_drop = mean(drop_rate);
+
+fprintf('\nAverage Call Drop Rate = %.4f\n', avg_drop);
+figure;
+bar(traffic);
+title('Traffic Demand in Zones');
+xlabel('Zones');
+ylabel('Users');
+
+grid on;
+figure;
+bar(allocated);
+
+title('Allocated Users in Zones');
+xlabel('Zones');
+ylabel('Allocated Users');
+
+grid on;
+
+figure;
+plot(drop_rate,'LineWidth',2);
+
+title('Call Drop Rate');
+xlabel('Zones');
+ylabel('Drop Rate');
+
+grid on;
+figure;
+
+theta = linspace(0,2*pi,100);
+
+for i = 1:4
+
+    x = 25*cos(2*pi*i/4);
+    y = 25*sin(2*pi*i/4);
+
+    fill(x + R*cos(theta), y + R*sin(theta), rand(1,3));
+
+    hold on;
+
+    text(x,y,['Zone ',num2str(i)]);
+
+end
+title('GSM Frequency Reuse Strategy');
+axis equal;
+grid on;

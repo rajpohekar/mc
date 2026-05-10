@@ -1,0 +1,53 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.special import erfc
+
+N = int(1e6)
+EbN0_dB = np.arange(-3, 11)
+EbN0 = 10 ** (EbN0_dB / 10)
+
+ip = np.random.rand(N) > 0.5
+s = 2 * ip - 1
+
+n = (1 / np.sqrt(2)) * (np.random.randn(N) + 1j * np.random.randn(N))
+
+ber_awgn_theory = 0.5 * erfc(np.sqrt(EbN0))
+ber_rayleigh_theory = 0.5 * (1 - np.sqrt(EbN0 / (1 + EbN0)))
+
+ber_awgn_sim = np.zeros(len(EbN0_dB))
+ber_rayleigh_sim = np.zeros(len(EbN0_dB))
+
+for ii in range(len(EbN0_dB)):
+    noise_scaled = 10 ** (-EbN0_dB[ii] / 20) * n
+    y_awgn = s + noise_scaled
+    ipHat_awgn = np.real(y_awgn) > 0
+    ber_awgn_sim[ii] = np.sum(ip != ipHat_awgn) / N
+
+    h = (np.random.randn(N) + 1j * np.random.randn(N)) / np.sqrt(2)
+    y_ray = h * s + noise_scaled
+    y_eq = y_ray / h
+    ipHat_ray = np.real(y_eq) > 0
+    ber_rayleigh_sim[ii] = np.sum(ip != ipHat_ray) / N
+
+plt.figure()
+plt.semilogy(EbN0_dB, ber_awgn_theory, 'b-o', linewidth=1.5)
+plt.semilogy(EbN0_dB, ber_rayleigh_theory, 'r-s', linewidth=1.5)
+plt.semilogy(EbN0_dB, ber_rayleigh_sim, 'r--', linewidth=1.5)
+plt.grid(True)
+plt.legend(['AWGN Theory', 'Rayleigh Theory', 'Rayleigh Simulation'], loc='lower left')
+plt.xlabel('E_b/N_0 (dB)')
+plt.ylabel('Bit Error Rate')
+plt.title('BER Performance of BPSK over AWGN and Rayleigh Channels')
+plt.axis([-3, 10, 1e-5, 1])
+
+plt.figure()
+plt.semilogy(EbN0_dB, ber_awgn_theory, 'b.-')
+plt.semilogy(EbN0_dB, ber_awgn_sim, 'mx-')
+plt.axis([-3, 10, 1e-5, 0.5])
+plt.grid(True)
+plt.legend(['theory', 'simulation'])
+plt.xlabel('Eb/No, dB')
+plt.ylabel('Bit Error Rate')
+plt.title('Bit error probability curve for BPSK modulation')
+
+plt.show()

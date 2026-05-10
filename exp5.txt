@@ -1,0 +1,78 @@
+Single Router Single Switch
+
+Single router and switch
+enable
+configure terminal
+
+interface fastethernet 0/0
+ip address 192.168.104.1 255.255.255.0
+no shutdown
+exit
+
+ip dhcp excluded-address 192.168.104.1
+
+ip dhcp pool LAB_POOL
+network 192.168.104.0 255.255.255.0
+default-router 192.168.104.1
+dns-server 8.8.8.8
+exit
+
+end
+write
+
+Two Router Two Switch
+
+Two routers👇🏻
+
+ Router 0
+
+enable
+configure terminal
+
+interface fa0/0
+ip address 10.0.0.1 255.255.255.0
+no shutdown
+
+interface s0/0/0
+ip address 192.168.1.1 255.255.255.252
+clock rate 64000
+no shutdown
+
+
+
+ip dhcp excluded-address 10.0.0.1
+
+ip dhcp pool LAN10
+network 10.0.0.0 255.255.255.0
+default-router 10.0.0.1
+dns-server 8.8.8.8
+
+ip route 12.0.0.0 255.255.255.0 192.168.1.2
+
+end
+write
+
+ Router 1
+
+enable
+configure terminal
+
+interface fa0/0
+ip address 12.0.0.1 255.255.255.0
+no shutdown
+
+interface s0/0/0
+ip address 192.168.1.2 255.255.255.252
+no shutdown
+
+ip dhcp excluded-address 12.0.0.1
+
+ip dhcp pool LAN12
+network 12.0.0.0 255.255.255.0
+default-router 12.0.0.1
+dns-server 8.8.8.8
+
+ip route 10.0.0.0 255.255.255.0 192.168.1.1
+
+end
+write
